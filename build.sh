@@ -8,7 +8,6 @@ function cleanup {
 
 trap cleanup EXIT
 
-
 echo "================================="
 echo "OBS4Pi4: Building Script v.0.0.1 "
 echo "================================="
@@ -76,6 +75,17 @@ sudo apt-get update -qq && sudo apt-get -y install \
     wget \
     yasm \
     zlib1g-dev
+
+
+echo "-----------------------------------"
+echo "Get and build pipewire"
+echo "-----------------------------------"
+
+# PIPEWIRE
+git clone https://gitlab.freedesktop.org/pipewire/pipewire.git "${TMPDIR}/pipewire" && cd "${TMPDIR}/pipewire" \
+        && ./autogen.sh \
+        && make -j$(nproc) \
+        && sudo make install
 
 echo "-----------------------------------"
 echo "Get and build libfdk-aac"
