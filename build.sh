@@ -1,10 +1,10 @@
 #!/bin/bash
 
 TMPDIR="$(mktemp -d)"
-
 function cleanup {
     rm -rf "${TMPDIR}"
 }
+
 
 trap cleanup EXIT
 
@@ -329,7 +329,8 @@ echo "-----------------------------------"
 
 cd obs-studio
 mkdir build && cd build
-cmake -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr ..
+# @TODO: CEF needed for browser plugin support
+cmake -DBUILD_BROWSER=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr ..
 
 echo "-----------------------------------"
 echo "             Building"
