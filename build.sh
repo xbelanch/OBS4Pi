@@ -345,5 +345,9 @@ cd $cwd
 echo ""
 echo "All done..........!"
 echo "Remember you need MESA_GL_VERSION_OVERRIDE=3.3 obs to start OBS!"
+echo "If you get an opengl seg fault try to fix it with"
+echo "export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libGL.so"
+echo "before launch OBS"
+echo ""
 echo "Read the README.md for more information"
 exit 0
