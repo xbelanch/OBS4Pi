@@ -173,10 +173,9 @@ echo "-----------------------------------"
 # Compile FFmpeg
 git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git "${TMPDIR}/FFmpeg" && cd "${TMPDIR}/FFmpeg" \
     && ./configure \
-        --extra-cflags="-I/usr/local/include" \
-        --extra-ldflags="-L/usr/local/lib -latomic" \
-        --extra-libs="-lpthread -lm" \
-        --arch=armel \
+        --extra-cflags='-I/usr/local/include -march=armv8-a+crc+simd -mfloat-abi=hard -mfpu=neon-fp-armv8 -mtune=cortex-a72' \
+        --extra-libs='-lpthread -lm -latomic' \
+        --arch=armhf \
         --enable-shared \
         --enable-libv4l2 \
         --enable-gmp \
