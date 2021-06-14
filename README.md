@@ -1,12 +1,10 @@
-# OBS4Pi. Installing FFMPEG and OBS Studio for the Raspberry Pi 4 ![Build failed](https://img.shields.io/badge/build-failed-red)
+# OBS4Pi. Installing FFMPEG and OBS Studio for the Raspberry Pi 4 ![Build passed](https://img.shields.io/badge/build-passed-green)
 
-## Introduction
+This script is an attempt for building FFMPEG (n4.3.2) and OBS Studio (26.1.1) on a Raspberry Pi 4. It grabs and copypasta from other building scripts I found but running without success.
 
-This script is an attempt for building FFMPEG and OBS Studio on a Raspberry Pi 4. It grabs and copypasta from other building scripts I found but running without success.
+If you're interested on this topic I suggest you to read this interesting thread, [OBS Raspberry Pi Build Instructions](https://obsproject.com/forum/threads/obs-raspberry-pi-build-instructions.115739/). It includes a lot of comments and suggestions to help to build OBS on a Raspberry Pi.
 
-If you're interested on this topic I suggest you to read this interesting thread, [OBS Raspberry Pi Build Instructions](https://obsproject.com/forum/threads/obs-raspberry-pi-build-instructions.115739/). It includes a lot of comments with suggestions to solve most of the problems you'll found (also unsolved mine!).
-
-Maybe this script will not work on a future or next week, so do feel free to open an issue to warning me.
+Maybe this script will not work tomorrow or next week, so do feel free to open an issue to warning me.
 
 <!--
 ## Cygwin + headless Raspberry Pi 4
