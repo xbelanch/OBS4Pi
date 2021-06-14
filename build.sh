@@ -1,7 +1,9 @@
-#!/bin/sh
-# set -e
+#!/bin/bash
+set -e
+
 TMPDIR="$(mktemp -d)"
-function cleanup {
+
+cleanup() {
     rm -rf "${TMPDIR}"
 }
 
@@ -69,25 +71,21 @@ dependencies=(
     "zlib1g-dev"
 )
 
-function my_date {
+my_date() {
   date "+%H:%M:%S %d-%m-%y "
 }
 
-function print_info() {
+print_info() {
     echo "================================="
     echo "OBS4Pi4: Building Script v$version "
     echo "================================="
     echo ""
     echo "OS: $(uname -s) $(uname -r) $(uname -m)"
-    echo "Compilation date: $(my_date)"
-    echo ""
-    echo "-----------------------------------"
-    echo "Preparing FFMPEG Dependencies"
-    echo "-----------------------------------"
+    echo "Compilation timestamp: $(my_date)"
     echo ""
 }
 
-function install_dependencies {
+install_dependencies() {
     echo "Update and upgrade list of installed packages"
     echo ""
     sudo apt-get update -qq && sudo apt-get -y upgrade
@@ -103,7 +101,7 @@ function install_dependencies {
     done
 }
 
-function get_and_build_pipewire {
+get_and_build_pipewire() {
     echo "-----------------------------------"
     echo "Get and build pipewire"
     echo "-----------------------------------"
@@ -113,7 +111,7 @@ function get_and_build_pipewire {
         && sudo make install
 }
 
-function get_and_build_libfdk_acc {
+get_and_build_libfdk_acc() {
     echo "-----------------------------------"
     echo "Get and build libfdk-aac"
     echo "-----------------------------------"
@@ -127,7 +125,7 @@ function get_and_build_libfdk_acc {
         && sudo make install
 }
 
-function get_and_build_libdav1d {
+get_and_build_libdav1d() {
     echo "-----------------------------------"
     echo "Get and build libdav1d"
     echo "-----------------------------------"
@@ -139,7 +137,7 @@ function get_and_build_libdav1d {
         && sudo ninja install
 }
 
-function get_and_build_libkvazaar {
+get_and_build_libkvazaar() {
     echo "-----------------------------------"
     echo "Get and build libkvazaar"
     echo "-----------------------------------"
@@ -152,7 +150,7 @@ function get_and_build_libkvazaar {
         && sudo make install
 }
 
-function get_and_build_libvpx {
+get_and_build_libvpx() {
     echo "-----------------------------------"
     echo "Get and build libvpx"
     echo "-----------------------------------"
@@ -170,16 +168,16 @@ function get_and_build_libaom {
     echo "-----------------------------------"
     # AP1
     # To disable remove --enable-libaom
-    git clone --depth 1 https://aomedia.googlesource.com/aom "${TMPDIR}/aom" && mkdir "${TMPDIR}/aom/aom_build" && cd "${TMPDIR}/aom/aom_build" \
-        && git checkout $(git rev-list -1 --before="Dec 15 2019" master) \
+    git clone --depth 1 --branch v3.0.0 https://aomedia.googlesource.com/aom "${TMPDIR}/aom" \
+        && mkdir "${TMPDIR}/aom/aom_build" \
+        && cd "${TMPDIR}/aom/aom_build" \
         && cmake -G "Unix Makefiles" AOM_SRC -DENABLE_NASM=on -DPYTHON_EXECUTABLE="$(which python3)" -DCMAKE_C_FLAGS="-mfpu=vfp -mfloat-abi=hard" .. \
         && sed -i 's/ENABLE_NEON:BOOL=ON/ENABLE_NEON:BOOL=OFF/' CMakeCache.txt \
-        && ./configure --enable-shared \
         && make -j$(nproc) \
         && sudo make install
 }
 
-function get_and_build_zimg {
+get_and_build_zimg() {
     echo "-----------------------------------"
     echo "Get and build zimg"
     echo "-----------------------------------"
@@ -191,7 +189,7 @@ function get_and_build_zimg {
         && sudo make install
 }
 
-function get_and_build_x264 {
+get_and_build_x264() {
     echo "-----------------------------------"
     echo "Get and build x264"
     echo "-----------------------------------"
@@ -203,11 +201,10 @@ function get_and_build_x264 {
         && sudo make install
 }
 
-function get_and_build_ffmpeg {
+get_and_build_ffmpeg() {
     echo "-----------------------------------"
     echo "Get and build FFMPEG"
     echo "-----------------------------------"
-    #--enable-libaom \
     git clone --depth 1 --branch n4.3.2 https://github.com/FFmpeg/FFmpeg.git "${TMPDIR}/FFmpeg" && cd "${TMPDIR}/FFmpeg" \
         && ./configure \
                --extra-cflags='-I/usr/local/include -march=armv8-a+crc+simd -mfloat-abi=hard -mfpu=neon-fp-armv8 -mtune=cortex-a72' \
@@ -215,6 +212,7 @@ function get_and_build_ffmpeg {
                --arch=armv7l \
                --enable-shared \
                --enable-libv4l2 \
+               --enable-libaom \
                --enable-version3 \
                --enable-gpl \
                --enable-libass \
@@ -251,7 +249,7 @@ function get_and_build_ffmpeg {
         && sudo make install
 }
 
-function get_and_build_obs {
+get_and_build_obs() {
     git clone --branch 26.1.1 https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
         && mkdir build32 && cd build32 \
         && cmake -DBUILD_BROWSER=OFF -DBUILD_VST=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr .. \
@@ -260,7 +258,7 @@ function get_and_build_obs {
         && sudo ldconfig
 }
 
-function main () {
+main() {
     print_info
     install_dependencies
     get_and_build_pipewire
@@ -268,11 +266,12 @@ function main () {
     get_and_build_libdav1d
     get_and_build_libkvazaar
     get_and_build_libvpx
-    # [FAIL] get_and_build_libaom
+    get_and_build_libaom
     get_and_build_zimg
     get_and_build_x264
     get_and_build_ffmpeg
     get_and_build_obs
+    cleanup
 }
 
 time main
