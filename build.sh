@@ -125,6 +125,7 @@ print_info() {
     echo "================================="
     echo ""
     echo "OS: $(uname -s) $(uname -r) $(uname -m)"
+    echo $(lsb_release -d)
     echo "Compilation timestamp: $(my_date)"
     echo ""
 }
