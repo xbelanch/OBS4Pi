@@ -2,6 +2,11 @@
 set -e
 
 TMPDIR="$(mktemp -d)"
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+NORMAL=$(tput sgr0)
 
 cleanup() {
     rm -rf "${TMPDIR}"
@@ -12,7 +17,7 @@ trap cleanup EXIT
 # Save current working directory
 cwd=$(pwd)
 
-version="0.0.2"
+version="0.0.3"
 dependencies=(
     "autoconf"
     "automake"
@@ -130,17 +135,20 @@ print_info() {
 }
 
 install_dependencies() {
+    # If you're interested on improving this
+    # take a look at https://stackoverflow.com/questions/1298066/how-to-check-if-package-installed-and-install-it-if-not
     echo "Update and upgrade list of installed packages"
     echo ""
     sudo apt-get update -qq && sudo apt-get -y upgrade
     echo ""
     echo "Install missing dependencies"
     for pkg in ${dependencies[@]}; do
-
-        is_pkg_installed=$(dpkg-query -W --showformat='${Status}\n' ${pkg} | grep "install ok installed")
-
-        if [ "${is_pkg_installed}" == "install ok installed" ]; then
-            echo ${pkg} is installed.
+        if [ $(dpkg-query -W -f='${Status}' "${pkg}" 2>/dev/null | grep -c "ok installed") -eq 0 ];
+        then
+            printf "${RED}Package: %-35s NOT INSTALLED${NORMAL}\n" $pkg;
+            sudo apt-get install -y "${pkg}";
+        else
+            printf "Package: ${MAGENTA}%-35s ${GREEN}OK${NORMAL}\n" $pkg;
         fi
     done
 }
@@ -305,16 +313,16 @@ get_and_build_obs() {
 main() {
     print_info
     install_dependencies
-    get_and_build_pipewire
-    get_and_build_libfdk_acc
-    get_and_build_libdav1d
-    get_and_build_libkvazaar
-    get_and_build_libvpx
-    get_and_build_libaom
-    get_and_build_zimg
-    get_and_build_x264
-    get_and_build_ffmpeg
-    get_and_build_obs
+    # get_and_build_pipewire
+    # get_and_build_libfdk_acc
+    # get_and_build_libdav1d
+    # get_and_build_libkvazaar
+    # get_and_build_libvpx
+    # get_and_build_libaom
+    # get_and_build_zimg
+    # get_and_build_x264
+    # get_and_build_ffmpeg
+    # get_and_build_obs
     cleanup
 }
 
