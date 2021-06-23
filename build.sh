@@ -19,7 +19,6 @@ dependencies=(
     "build-essential"
     "cmake"
     "doxygen"
-    "gfortran"
     "git"
     "graphviz"
     "imagemagick"
