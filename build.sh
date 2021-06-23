@@ -4,9 +4,11 @@ set -e
 TMPDIR="$(mktemp -d)"
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
 BLUE=$(tput setaf 4)
-MAGENTA=$(tput setaf 5)
-NORMAL=$(tput sgr0)
+PURPLE=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+DEFAULT=$(tput sgr0)
 
 cleanup() {
     rm -rf "${TMPDIR}"
@@ -27,7 +29,6 @@ dependencies=(
     "git"
     "graphviz"
     "imagemagick"
-    "libasound2-dev"
     "libasound2-dev"
     "libass-dev"
     "libatlas-base-dev"
@@ -124,50 +125,64 @@ my_date() {
 }
 
 print_info() {
-    echo "================================="
-    echo "OBS4Pi4: Building Script v$version "
-    echo "================================="
+    echo "${GREEN}"
+    echo "________ __________  _________   _______________.__   _____  "
+    echo "\_____  \\______   \/   _____/  /  |  \______   \__| /  |  | "
+    echo " /   |   \|    |  _/\_____  \  /   |  ||     ___/  |/   |  |_"
+    echo "${PURPLE}/    |    \    |   \/        \/    ^   /    |   |  /    ^   /"
+    echo "\_______  /______  /_______  /\____   ||____|   |__\____   | "
+    echo "        \/       \/        \/      |__|                 |__| "
+    echo "${DEFAULT}"
+
+    echo "================================================================"
+    echo "    FFmpeg and OBS Studio Building Script v$version for Pi4"
+    echo "================================================================"
     echo ""
-    echo "OS: $(uname -s) $(uname -r) $(uname -m)"
-    echo $(lsb_release -d)
-    echo "Compilation timestamp: $(my_date)"
+    echo "${RED}OS${DEFAULT}: $(lsb_release -d | grep -oP "(?<=\s)(.*)")"
+    echo "${RED}Kernel${DEFAULT}: $(uname -s) $(uname -r) $(uname -m)"
+    echo "${RED}Timestamp${DEFAULT}: $(my_date)"
     echo ""
 }
 
 install_dependencies() {
     # If you're interested on improving this
     # take a look at https://stackoverflow.com/questions/1298066/how-to-check-if-package-installed-and-install-it-if-not
+    echo "${YELLOW}"
     echo "Update and upgrade list of installed packages"
     echo ""
     sudo apt-get update -qq && sudo apt-get -y upgrade
     echo ""
     echo "Install missing dependencies"
+    echo "${DEFAULT}"
     for pkg in ${dependencies[@]}; do
         if [ $(dpkg-query -W -f='${Status}' "${pkg}" 2>/dev/null | grep -c "ok installed") -eq 0 ];
         then
-            printf "${RED}Package: %-35s NOT INSTALLED${NORMAL}\n" $pkg;
+            printf "${RED}Package: %-35s NOT INSTALLED${DEFAULT}\n" $pkg;
             sudo apt-get install -y "${pkg}";
         else
-            printf "Package: ${MAGENTA}%-35s ${GREEN}OK${NORMAL}\n" $pkg;
+            printf "Package: ${PURPLE}%-35s ${GREEN}OK${DEFAULT}\n" $pkg;
         fi
     done
 }
 
 get_and_build_pipewire() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
-    echo "Get and build pipewire"
+    echo "Get and build Pipewire"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     git clone https://gitlab.freedesktop.org/pipewire/pipewire.git "${TMPDIR}/pipewire" && cd "${TMPDIR}/pipewire" \
         && ./autogen.sh \
         && make -j$(nproc) \
         && sudo make install
 }
 
-get_and_build_libfdk_acc() {
+get_and_build_libfdk_aac() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build libfdk-aac"
     echo "-----------------------------------"
-
+    echo "${DEFAULT}"
     # AAC
     # To disable remove --enable-libfdk-aac
     git clone --depth 1 https://github.com/mstorsjo/fdk-aac "${TMPDIR}/fdk-aac" && cd "${TMPDIR}/fdk-aac" \
@@ -178,9 +193,11 @@ get_and_build_libfdk_acc() {
 }
 
 get_and_build_libdav1d() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build libdav1d"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     # AV1
     # To disable remove --enable-libdav1d
     git clone --depth 1 https://code.videolan.org/videolan/dav1d.git "${TMPDIR}/dav1d" && mkdir "${TMPDIR}/dav1d/build" && cd "${TMPDIR}/dav1d/build" \
@@ -190,9 +207,11 @@ get_and_build_libdav1d() {
 }
 
 get_and_build_libkvazaar() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build libkvazaar"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     # HEVC
     # To disable remove --enable-libkvazaar
     git clone --depth 1 https://github.com/ultravideo/kvazaar.git "${TMPDIR}/kvazaar" && cd "${TMPDIR}/kvazaar" \
@@ -203,9 +222,11 @@ get_and_build_libkvazaar() {
 }
 
 get_and_build_libvpx() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build libvpx"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     # VP8 and VP9
     # To disable remove --enable-libvpx
     git clone --depth 1 https://chromium.googlesource.com/webm/libvpx "${TMPDIR}/libvpx" && cd "${TMPDIR}/libvpx" \
@@ -214,10 +235,12 @@ get_and_build_libvpx() {
         && sudo make install
 }
 
-function get_and_build_libaom {
+get_and_build_libaom() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build libaom"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     # AP1
     # To disable remove --enable-libaom
     git clone --depth 1 --branch v3.0.0 https://aomedia.googlesource.com/aom "${TMPDIR}/aom" \
@@ -230,9 +253,11 @@ function get_and_build_libaom {
 }
 
 get_and_build_zimg() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build zimg"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     # ZIMG
     git clone --depth 1 https://github.com/sekrit-twc/zimg.git "${TMPDIR}/zimg" &&  cd "${TMPDIR}/zimg" \
         && ./autogen.sh \
@@ -242,9 +267,11 @@ get_and_build_zimg() {
 }
 
 get_and_build_x264() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build x264"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     wget https://anduin.linuxfromscratch.org/BLFS/x264/x264-20210211.tar.xz
     tar -xf x264-20210211.tar.xz
     cd x264-20210211 \
@@ -254,9 +281,11 @@ get_and_build_x264() {
 }
 
 get_and_build_ffmpeg() {
+    echo "${YELLOW}"
     echo "-----------------------------------"
-    echo "Get and build FFMPEG"
+    echo "Get and build FFMPEG n4.3.2"
     echo "-----------------------------------"
+    echo "${DEFAULT}"
     git clone --depth 1 --branch n4.3.2 https://github.com/FFmpeg/FFmpeg.git "${TMPDIR}/FFmpeg" && cd "${TMPDIR}/FFmpeg" \
         && ./configure \
                --extra-cflags='-I/usr/local/include -march=armv8-a+crc+simd -mfloat-abi=hard -mfpu=neon-fp-armv8 -mtune=cortex-a72' \
@@ -302,6 +331,11 @@ get_and_build_ffmpeg() {
 }
 
 get_and_build_obs() {
+    echo "${YELLOW}"
+    echo "-----------------------------------"
+    echo "Get and build OBS Studio 26.1.1"
+    echo "-----------------------------------"
+    echo "${DEFAULT}"
     git clone --branch 26.1.1 https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
         && mkdir build32 && cd build32 \
         && cmake -DBUILD_BROWSER=OFF -DBUILD_VST=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr .. \
@@ -311,16 +345,18 @@ get_and_build_obs() {
 }
 
 main() {
+    clear
     print_info
     install_dependencies
     get_and_build_pipewire
-    get_and_build_libfdk_acc
+    get_and_build_libfdk_aac
     get_and_build_libdav1d
     get_and_build_libkvazaar
     get_and_build_libvpx
     get_and_build_libaom
     get_and_build_zimg
     get_and_build_x264
+    sudo ldconfig
     get_and_build_ffmpeg
     get_and_build_obs
     cleanup
@@ -330,12 +366,8 @@ time main
 
 cd $cwd
 
-echo ""
+echo "${YELLOW}"
 echo "All done!"
-echo "Remember you need MESA_GL_VERSION_OVERRIDE=3.3 obs to start OBS!"
-echo "If you get an opengl seg fault try to fix it with"
-echo "export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libGL.so"
-echo "before launch OBS"
-echo ""
-echo "Read the README.md for more information"
+echo "Cross your fingers and run ./launch_OBS.sh script to launch OBS"
+echo "${DEFAULT}"
 exit 0
