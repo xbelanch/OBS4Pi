@@ -39,6 +39,7 @@ dependencies=(
     "libavutil-dev"
     "libcurl4-openssl-dev"
     "libdc1394-22-dev"
+    "libdrm-dev"
     "libfontconfig1-dev"
     "libfreetype6-dev"
     "libgl1-mesa-dev"
