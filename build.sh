@@ -168,6 +168,11 @@ install_dependencies() {
     done
 }
 
+check_os_version() {
+    os_version=$(($(lsb_release -sr) + 0))
+    [[ $os_version -eq 11 ]] || { echo >&2 "${RED}!!!!!You must update Debian version to ${CYAN}bullseye${RED} before you execute again the script!!!!!${DEFAULT}" ; exit 1; }
+}
+
 get_and_build_pipewire() {
     echo "${YELLOW}"
     echo "-----------------------------------"
@@ -379,6 +384,7 @@ get_and_build_obs() {
 main() {
     clear
     print_info
+    check_os_version
     install_dependencies
     get_and_build_pipewire
     get_and_build_libfdk_aac
