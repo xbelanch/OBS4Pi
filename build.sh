@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-
+export LD_LIBRARY_PATH=/usr/local/lib/
 TMPDIR="$(mktemp -d)"
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -23,9 +23,11 @@ version="0.0.3"
 dependencies=(
     "autoconf"
     "automake"
+    "bison"
     "build-essential"
     "cmake"
     "doxygen"
+    "flex"
     "git"
     "graphviz"
     "imagemagick"
@@ -273,12 +275,40 @@ get_and_build_x264() {
     echo "Get and build x264"
     echo "-----------------------------------"
     echo "${DEFAULT}"
-    wget https://anduin.linuxfromscratch.org/BLFS/x264/x264-20210211.tar.xz
+    mkdir "${TMPDIR}/x264" && cd "${TMPDIR}/x264" \
+    && wget https://anduin.linuxfromscratch.org/BLFS/x264/x264-20210211.tar.xz
     tar -xf x264-20210211.tar.xz
     cd x264-20210211 \
         && ./configure --enable-shared --enable-pic --disable-cli \
         && make -j$(nproc) \
         && sudo make install
+}
+
+# Stolen from: https://github.com/PietroAvolio/Building-Gstreamer-Raspberry-Pi-With-SRT-Support/blob/master/gstreamer-build.sh
+get_and_build_gstreamer() {
+    echo "${YELLOW}"
+    echo "-----------------------------------"
+    echo "Get and build gstreamer"
+    echo "-----------------------------------"
+    echo "${DEFAULT}"
+    git clone git://anongit.freedesktop.org/git/gstreamer/gstreamer "${TMPDIR}/gstreamer" && cd "${TMPDIR}/gstreamer" \
+    && meson build \
+    && ninja -C build \
+    && sudo ninja -C build install
+}
+
+get_and_build_obs_gstreamer() {
+    echo "${YELLOW}"
+    echo "------------------------------------------"
+    echo "Get and build obs-gstreamer v0.2.0  plugin"
+    echo "------------------------------------------"
+    echo "${DEFAULT}"
+    git clone https://github.com/fzwoch/obs-gstreamer.git "${TMPDIR}/obs-gstreamer" && cd "${TMPDIR}/obs-gstreamer" \
+    && git checkout tags/v0.2.0 \
+    && meson --buildtype=release build \
+    && ninja -C build \
+    && sudo ninja -C build install \
+    && sudo ln -sf /usr/local/lib/arm-linux-gnueabihf/obs-plugins/obs-gstreamer.so /usr/lib/obs-plugins/obs-gstreamer.so
 }
 
 get_and_build_ffmpeg() {
@@ -334,10 +364,11 @@ get_and_build_ffmpeg() {
 get_and_build_obs() {
     echo "${YELLOW}"
     echo "-----------------------------------"
-    echo "Get and build OBS Studio 26.1.1"
+    echo "Get and build OBS Studio 26.1.2"
     echo "-----------------------------------"
     echo "${DEFAULT}"
-    git clone --branch 26.1.1 https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
+    git clone https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
+        && git checkout tags/26.1.2 \
         && mkdir build32 && cd build32 \
         && cmake -DBUILD_BROWSER=OFF -DBUILD_VST=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr .. \
         && make -j4 \
@@ -349,17 +380,20 @@ main() {
     clear
     print_info
     install_dependencies
-    get_and_build_pipewire
-    get_and_build_libfdk_aac
-    get_and_build_libdav1d
-    get_and_build_libkvazaar
-    get_and_build_libvpx
-    get_and_build_libaom
-    get_and_build_zimg
-    get_and_build_x264
+#    get_and_build_pipewire
+#    get_and_build_libfdk_aac
+#    get_and_build_libdav1d
+#    get_and_build_libkvazaar
+#    get_and_build_libvpx
+#    get_and_build_libaom
+#    get_and_build_zimg
+#    get_and_build_x264
+#    get_and_build_gstreamer
     sudo ldconfig
-    get_and_build_ffmpeg
+#    get_and_build_ffmpeg
     get_and_build_obs
+    get_and_build_obs_gstreamer
+    sudo ldconfig
     cleanup
 }
 
