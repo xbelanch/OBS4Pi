@@ -380,17 +380,17 @@ main() {
     clear
     print_info
     install_dependencies
-#    get_and_build_pipewire
-#    get_and_build_libfdk_aac
-#    get_and_build_libdav1d
-#    get_and_build_libkvazaar
-#    get_and_build_libvpx
-#    get_and_build_libaom
-#    get_and_build_zimg
-#    get_and_build_x264
-#    get_and_build_gstreamer
+    get_and_build_pipewire
+    get_and_build_libfdk_aac
+    get_and_build_libdav1d
+    get_and_build_libkvazaar
+    get_and_build_libvpx
+    get_and_build_libaom
+    get_and_build_zimg
+    get_and_build_x264
+    get_and_build_gstreamer
     sudo ldconfig
-#    get_and_build_ffmpeg
+    get_and_build_ffmpeg
     get_and_build_obs
     get_and_build_obs_gstreamer
     sudo ldconfig
