@@ -1,4 +1,4 @@
-# OBS4Pi. Building and installing FFmpeg and OBS Studio for the Raspberry Pi 4 ![Build passed](https://img.shields.io/badge/build-passed-green)
+# OBS4Pi. Building and installing FFmpeg and OBS Studio for the Raspberry Pi 4 ![Build passed](https://img.shields.io/badge/build-passed-green) ![GitHub last commit](https://img.shields.io/github/last-commit/xbelanch/OBS4Pi)
 
 ## Description
 
