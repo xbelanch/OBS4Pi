@@ -369,11 +369,11 @@ get_and_build_ffmpeg() {
 get_and_build_obs() {
     echo "${YELLOW}"
     echo "-----------------------------------"
-    echo "Get and build OBS Studio 26.1.2"
+    echo "Get and build OBS Studio 27.0.1"
     echo "-----------------------------------"
     echo "${DEFAULT}"
     git clone https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
-        && git checkout tags/26.1.2 \
+        && git checkout tags/27.0.1 \
         && mkdir build32 && cd build32 \
         && cmake -DBUILD_BROWSER=OFF -DBUILD_VST=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr .. \
         && make -j4 \
