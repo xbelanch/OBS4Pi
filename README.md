@@ -7,7 +7,7 @@ This script [builds and install](https://stackoverflow.com/questions/19753078/wh
 ## Installation
 
 Before running the script you must upgrade the currently Raspberry Pi OS *Buster* version to the not yet released *Bullseye*. This [tutorial](https://raspberrytips.com/update-raspberry-pi-latest-version/) explains the basic steps 
-of how to do it.
+of how to do it. If you found issues during the upgrade phase check it out the troubleshooting section of that step by step tutorial: [Manually upgrade Debian from Buster to Bullseye](https://doc.akito.ooo/books/essentials/page/manually-upgrade-debian-from-buster-to-bullseye).
 
 ## Frequently Asked Questions
 
