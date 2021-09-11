@@ -10,6 +10,9 @@ PURPLE=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 DEFAULT=$(tput sgr0)
 
+FFMPEG_TAG=n4.5-dev
+OBS_TAG=27.0.1
+
 cleanup() {
     rm -rf "${TMPDIR}"
 }
@@ -144,6 +147,8 @@ print_info() {
     echo "${RED}OS${DEFAULT}: $(lsb_release -d | grep -oP "(?<=\s)(.*)")"
     echo "${RED}Kernel${DEFAULT}: $(uname -s) $(uname -r) $(uname -m)"
     echo "${RED}Timestamp${DEFAULT}: $(my_date)"
+    echo "${RED}FFmpeg tag source version${DEFAULT}: ${FFMPEG_TAG}"
+    echo "${RED}OBS tag source version${DEFAULT}: ${OBS_TAG}"
     echo ""
 }
 
@@ -319,10 +324,10 @@ get_and_build_obs_gstreamer() {
 get_and_build_ffmpeg() {
     echo "${YELLOW}"
     echo "-----------------------------------"
-    echo "Get and build FFMPEG n4.3.2"
+    echo "Get and build FFMPEG ${FFMPEG_TAG}"
     echo "-----------------------------------"
     echo "${DEFAULT}"
-    git clone --depth 1 --branch n4.3.2 https://github.com/FFmpeg/FFmpeg.git "${TMPDIR}/FFmpeg" && cd "${TMPDIR}/FFmpeg" \
+    git clone --depth 1 --branch ${FFMPEG_TAG} https://github.com/FFmpeg/FFmpeg.git "${TMPDIR}/FFmpeg" && cd "${TMPDIR}/FFmpeg" \
         && ./configure \
                --extra-cflags='-I/usr/local/include -march=armv8-a+crc+simd -mfloat-abi=hard -mfpu=neon-fp-armv8 -mtune=cortex-a72' \
                --extra-libs='-lpthread -lm -latomic' \
@@ -333,7 +338,6 @@ get_and_build_ffmpeg() {
                --enable-version3 \
                --enable-gpl \
                --enable-libass \
-               --enable-libdav1d \
                --enable-libdrm \
                --enable-libfdk-aac \
                --enable-libfreetype \
@@ -369,11 +373,11 @@ get_and_build_ffmpeg() {
 get_and_build_obs() {
     echo "${YELLOW}"
     echo "-----------------------------------"
-    echo "Get and build OBS Studio 27.0.1"
+    echo "Get and build OBS Studio ${OBS_TAG}"
     echo "-----------------------------------"
     echo "${DEFAULT}"
     git clone https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
-        && git checkout tags/27.0.1 \
+        && git checkout tags/${OBS_TAG} \
         && mkdir build32 && cd build32 \
         && cmake -DBUILD_BROWSER=OFF -DBUILD_VST=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr .. \
         && make -j4 \
