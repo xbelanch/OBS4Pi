@@ -285,10 +285,8 @@ get_and_build_x264() {
     echo "Get and build x264"
     echo "-----------------------------------"
     echo "${DEFAULT}"
-    mkdir "${TMPDIR}/x264" && cd "${TMPDIR}/x264" \
-    && wget https://anduin.linuxfromscratch.org/BLFS/x264/x264-20210211.tar.xz
-    tar -xf x264-20210211.tar.xz
-    cd x264-20210211 \
+    git clone https://code.videolan.org/videolan/x264.git "${TMPDIR}/x264" && cd "${TMPDIR}/x264" \
+	&& git checkout stable \
         && ./configure --enable-shared --enable-pic --disable-cli \
         && make -j$(nproc) \
         && sudo make install
