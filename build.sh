@@ -10,8 +10,8 @@ PURPLE=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 DEFAULT=$(tput sgr0)
 
-FFMPEG_TAG=n4.5-dev
-OBS_TAG=27.0.1
+FFMPEG_TAG=n4.4.1
+OBS_TAG=27.1.3
 
 cleanup() {
     rm -rf "${TMPDIR}"
