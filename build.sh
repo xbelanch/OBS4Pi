@@ -184,10 +184,12 @@ get_and_build_pipewire() {
     echo "Get and build Pipewire"
     echo "-----------------------------------"
     echo "${DEFAULT}"
-    git clone https://gitlab.freedesktop.org/pipewire/pipewire.git "${TMPDIR}/pipewire" && cd "${TMPDIR}/pipewire" \
-        && ./autogen.sh \
-        && make -j$(nproc) \
-        && sudo make install
+    git clone https://gitlab.freedesktop.org/pipewire/pipewire.git "${TMPDIR}/pipewire" \
+    && cd "${TMPDIR}/pipewire" \
+    && git checkout 0.3.43 \
+    && ./autogen.sh \
+    && make -j$(nproc) \
+    && sudo make install
 }
 
 get_and_build_libfdk_aac() {
