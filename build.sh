@@ -54,7 +54,6 @@ dependencies=(
     "libgtk-3-dev"
     "libjack-jackd2-dev"
     "libjansson-dev"
-    "libjasper-dev"
     "libjpeg-dev"
     "liblapacke-dev"
     "libluajit-5.1-dev"
