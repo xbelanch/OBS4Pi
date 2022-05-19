@@ -294,13 +294,15 @@ get_and_build_x264() {
 }
 
 # Stolen from: https://github.com/PietroAvolio/Building-Gstreamer-Raspberry-Pi-With-SRT-Support/blob/master/gstreamer-build.sh
+# git clone git://anongit.freedesktop.org/git/gstreamer/gstreamer
 get_and_build_gstreamer() {
     echo "${YELLOW}"
     echo "-----------------------------------"
     echo "Get and build gstreamer"
     echo "-----------------------------------"
     echo "${DEFAULT}"
-    git clone git://anongit.freedesktop.org/git/gstreamer/gstreamer "${TMPDIR}/gstreamer" && cd "${TMPDIR}/gstreamer" \
+    git clone https://gitlab.freedesktop.org/gstreamer/gstreamer.git "${TMPDIR}/gstreamer" && cd "${TMPDIR}/gstreamer" \
+    && git checkout tags/1.19.2 \
     && meson build \
     && ninja -C build \
     && sudo ninja -C build install
