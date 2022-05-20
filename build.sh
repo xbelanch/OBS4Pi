@@ -28,6 +28,7 @@ dependencies=(
     "automake"
     "bison"
     "build-essential"
+    "v4l2loopback-dkms"
     "cmake"
     "doxygen"
     "flex"
