@@ -274,7 +274,7 @@ get_and_build_zimg() {
     echo "-----------------------------------"
     echo "${DEFAULT}"
     # ZIMG
-    git clone --depth 1 https://github.com/sekrit-twc/zimg.git "${TMPDIR}/zimg" &&  cd "${TMPDIR}/zimg" \
+    git clone --recurse-submodules https://github.com/sekrit-twc/zimg.git "${TMPDIR}/zimg" &&  cd "${TMPDIR}/zimg" \
         && ./autogen.sh \
         && ./configure --enable-shared \
         && make -j$(nproc) \
