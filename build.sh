@@ -124,6 +124,11 @@ dependencies=(
     "wget"
     "yasm"
     "zlib1g-dev"
+    "libboost-all-dev"
+    "qt5-image-formats-plugins"
+    "qtcreator"
+    "qtbase5-dev"
+    "qtdeclarative5-dev"
 )
 
 my_date() {
@@ -323,6 +328,21 @@ get_and_build_obs_gstreamer() {
     && sudo ln -sf /usr/local/lib/arm-linux-gnueabihf/obs-plugins/obs-gstreamer.so /usr/lib/obs-plugins/obs-gstreamer.so
 }
 
+get_and_build_obs_websocket() {
+    echo "${YELLOW}"
+    echo "----------------------------------------"
+    echo "Get and build obs-websocket plugin 4.9.1"
+    echo "----------------------------------------"
+    echo "${DEFAULT}"
+    git clone --recursive https://github.com/obsproject/obs-websocket.git "${TMPDIR}/obs-websocket" && cd "${TMPDIR}/obs-websocket" \
+    && git checkout tags/4.9.1 \
+    && mkdir build && cd build \
+    && cmake -DLIBOBS_INCLUDE_DIR=/${TMPDIR}/OBS/libobs -DCMAKE_INSTALL_PREFIX=/usr .. \
+    && make -j4 \
+    && sudo make install \
+    && sudo ln -sf /usr/lib/arm-linux-gnueabihf/obs-plugins/obs-websocket.so /usr/lib/obs-plugins/obs-websocket.so
+}
+
 get_and_build_ffmpeg() {
     echo "${YELLOW}"
     echo "-----------------------------------"
@@ -405,6 +425,7 @@ main() {
     get_and_build_ffmpeg
     get_and_build_obs
     get_and_build_obs_gstreamer
+    get_and_build_obs_websocket
     sudo ldconfig
     cleanup
 }
