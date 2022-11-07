@@ -10,8 +10,10 @@ PURPLE=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 DEFAULT=$(tput sgr0)
 
-FFMPEG_TAG=n4.4.1
-OBS_TAG=27.1.3
+#FFMPEG_TAG=n4.4.1
+FFMPEG_TAG=n5.0
+#OBS_TAG=27.1.3
+#OBS_TAG=28.0.0
 
 cleanup() {
     rm -rf "${TMPDIR}"
@@ -129,6 +131,8 @@ dependencies=(
     "qtcreator"
     "qtbase5-dev"
     "qtdeclarative5-dev"
+    "libxcb-composite0-dev"
+    "libpci-dev"
 )
 
 my_date() {
@@ -398,10 +402,9 @@ get_and_build_obs() {
     echo "Get and build OBS Studio ${OBS_TAG}"
     echo "-----------------------------------"
     echo "${DEFAULT}"
-    git clone https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
-        && git checkout tags/${OBS_TAG} \
+    git clone --recursive https://github.com/obsproject/obs-studio.git "${TMPDIR}/OBS" && cd "${TMPDIR}/OBS" \
         && mkdir build32 && cd build32 \
-        && cmake -DBUILD_BROWSER=OFF -DBUILD_VST=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr .. \
+        && cmake -DENABLE_NEW_MPEGTS_OUTPUT=OFF -DENABLE_BROWSER=OFF -DUNIX_STRUCTURE=1 -DCMAKE_INSTALL_PREFIX=/usr .. \
         && make -j4 \
         && sudo make install \
         && sudo ldconfig
@@ -425,7 +428,6 @@ main() {
     get_and_build_ffmpeg
     get_and_build_obs
     get_and_build_obs_gstreamer
-    get_and_build_obs_websocket
     sudo ldconfig
     cleanup
 }
