@@ -9,11 +9,8 @@ BLUE=$(tput setaf 4)
 PURPLE=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 DEFAULT=$(tput sgr0)
-
-#FFMPEG_TAG=n4.4.1
 FFMPEG_TAG=n5.0
-#OBS_TAG=27.1.3
-#OBS_TAG=28.0.0
+OBS_TAG=28.0.0
 
 cleanup() {
     rm -rf "${TMPDIR}"
@@ -330,21 +327,6 @@ get_and_build_obs_gstreamer() {
     && ninja -C build \
     && sudo ninja -C build install \
     && sudo ln -sf /usr/local/lib/arm-linux-gnueabihf/obs-plugins/obs-gstreamer.so /usr/lib/obs-plugins/obs-gstreamer.so
-}
-
-get_and_build_obs_websocket() {
-    echo "${YELLOW}"
-    echo "----------------------------------------"
-    echo "Get and build obs-websocket plugin 4.9.1"
-    echo "----------------------------------------"
-    echo "${DEFAULT}"
-    git clone --recursive https://github.com/obsproject/obs-websocket.git "${TMPDIR}/obs-websocket" && cd "${TMPDIR}/obs-websocket" \
-    && git checkout tags/4.9.1 \
-    && mkdir build && cd build \
-    && cmake -DLIBOBS_INCLUDE_DIR=/${TMPDIR}/OBS/libobs -DCMAKE_INSTALL_PREFIX=/usr .. \
-    && make -j4 \
-    && sudo make install \
-    && sudo ln -sf /usr/lib/arm-linux-gnueabihf/obs-plugins/obs-websocket.so /usr/lib/obs-plugins/obs-websocket.so
 }
 
 get_and_build_ffmpeg() {
